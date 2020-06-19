@@ -9,7 +9,7 @@ from mlagents.trainers.training_status import (
     GlobalTrainingStatus,
 )
 from mlagents.trainers.policy.checkpoint_manager import (
-    CheckpointManagerClass,
+    CheckpointManager,
     CheckpointType,
 )
 
@@ -71,7 +71,7 @@ def test_model_management(tmpdir):
             "reward": 2.312,
         },
     ]
-    CheckpointManagerClass.set_parameter_state(
+    CheckpointManager.set_parameter_state(
         brain_name, CheckpointType.CHECKPOINT, test_checkpoint_list
     )
 
@@ -80,10 +80,10 @@ def test_model_management(tmpdir):
         "file_path": os.path.join(final_model_path, f"{brain_name}-4.nn"),
         "rewards": 2.678,
     }
-    CheckpointManagerClass.track_checkpoint_info(brain_name, new_checkpoint_4, 4)
+    CheckpointManager.track_checkpoint_info(brain_name, new_checkpoint_4, 4)
     assert (
         len(
-            CheckpointManagerClass.checkpoints_saved[brain_name][
+            CheckpointManager.checkpoints_saved[brain_name][
                 CheckpointType.CHECKPOINT.value
             ]
         )
@@ -95,10 +95,10 @@ def test_model_management(tmpdir):
         "file_path": os.path.join(final_model_path, f"{brain_name}-5.nn"),
         "rewards": 3.122,
     }
-    CheckpointManagerClass.track_checkpoint_info(brain_name, new_checkpoint_5, 4)
+    CheckpointManager.track_checkpoint_info(brain_name, new_checkpoint_5, 4)
     assert (
         len(
-            CheckpointManagerClass.checkpoints_saved[brain_name][
+            CheckpointManager.checkpoints_saved[brain_name][
                 CheckpointType.CHECKPOINT.value
             ]
         )
@@ -106,12 +106,10 @@ def test_model_management(tmpdir):
     )
 
     final_model_path = f"{final_model_path}.nn"
-    CheckpointManagerClass.track_final_model_info(
-        brain_name, final_model_path, 4, 3.294
-    )
+    CheckpointManager.track_final_model_info(brain_name, final_model_path, 4, 3.294)
     assert (
         len(
-            CheckpointManagerClass.checkpoints_saved[brain_name][
+            CheckpointManager.checkpoints_saved[brain_name][
                 CheckpointType.CHECKPOINT.value
             ]
         )
@@ -119,7 +117,7 @@ def test_model_management(tmpdir):
     )
 
     # Check GlobalTrainingStatus has updated keys
-    CheckpointManagerClass.save_checkpoints()
+    CheckpointManager.save_checkpoints()
     assert (
         len(
             GlobalTrainingStatus.saved_state[brain_name][

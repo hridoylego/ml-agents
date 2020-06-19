@@ -24,28 +24,26 @@ class CheckpointType(Enum):
     REWARD = "reward"
 
 
-class CheckpointManagerClass:
+class CheckpointManager:
     checkpoints_saved: Dict[str, Dict[str, Any]] = defaultdict(lambda: {})
 
     @staticmethod
     def save_checkpoints():
-        GlobalTrainingStatus.saved_state.update(
-            CheckpointManagerClass.checkpoints_saved
-        )
+        GlobalTrainingStatus.saved_state.update(CheckpointManager.checkpoints_saved)
 
     @staticmethod
     def set_parameter_state(category: str, key: CheckpointType, value: Any) -> None:
-        CheckpointManagerClass.checkpoints_saved[category][key.value] = value
+        CheckpointManager.checkpoints_saved[category][key.value] = value
 
     @staticmethod
     def append_to_parameter_state(
         category: str, key: CheckpointType, value: Any
     ) -> None:
-        CheckpointManagerClass.checkpoints_saved[category][key.value].append(value)
+        CheckpointManager.checkpoints_saved[category][key.value].append(value)
 
     @staticmethod
     def get_parameter_state(category: str, key: CheckpointType) -> Any:
-        return CheckpointManagerClass.checkpoints_saved[category].get(key.value, None)
+        return CheckpointManager.checkpoints_saved[category].get(key.value, None)
 
     @staticmethod
     def remove_checkpoint(checkpoint: Dict[str, Any]) -> None:
@@ -71,20 +69,20 @@ class CheckpointManagerClass:
         :param category: The category (usually behavior name) of the parameter.
         :param keep_checkpoints: Number of checkpoints to record (user-defined).
         """
-        if not CheckpointManagerClass.get_parameter_state(
+        if not CheckpointManager.get_parameter_state(
             category, CheckpointType.CHECKPOINT
         ):
-            CheckpointManagerClass.set_parameter_state(
+            CheckpointManager.set_parameter_state(
                 category, CheckpointType.CHECKPOINT, []
             )
-        checkpoint_list = CheckpointManagerClass.get_parameter_state(
+        checkpoint_list = CheckpointManager.get_parameter_state(
             category, CheckpointType.CHECKPOINT
         )
         num_checkpoints = len(checkpoint_list)
         while num_checkpoints >= keep_checkpoints:
             if keep_checkpoints <= 0:
                 break
-            CheckpointManagerClass.remove_checkpoint(checkpoint_list.pop(0))
+            CheckpointManager.remove_checkpoint(checkpoint_list.pop(0))
             num_checkpoints = len(checkpoint_list)
         return
 
@@ -98,8 +96,8 @@ class CheckpointManagerClass:
         :param value: The new checkpoint to be recorded.
         :param keep_checkpoints: Number of checkpoints to record (user-defined).
         """
-        CheckpointManagerClass.manage_checkpoint_list(category, keep_checkpoints)
-        CheckpointManagerClass.append_to_parameter_state(
+        CheckpointManager.manage_checkpoint_list(category, keep_checkpoints)
+        CheckpointManager.append_to_parameter_state(
             category, CheckpointType.CHECKPOINT, value
         )
         return
@@ -116,14 +114,12 @@ class CheckpointManagerClass:
         :param final_model_path: The file path of the final model.
         :param keep_checkpoints: Number of checkpoints to record (user-defined).
         """
-        CheckpointManagerClass.manage_checkpoint_list(category, keep_checkpoints)
-        CheckpointManagerClass.set_parameter_state(
+        CheckpointManager.manage_checkpoint_list(category, keep_checkpoints)
+        CheckpointManager.set_parameter_state(
             category, CheckpointType.FINAL_PATH, final_model_path
         )
-        CheckpointManagerClass.set_parameter_state(
+        CheckpointManager.set_parameter_state(
             category, CheckpointType.REWARD, mean_reward
         )
-        GlobalTrainingStatus.update_parameter_state(
-            CheckpointManagerClass.checkpoints_saved
-        )
+        GlobalTrainingStatus.update_parameter_state(CheckpointManager.checkpoints_saved)
         return
