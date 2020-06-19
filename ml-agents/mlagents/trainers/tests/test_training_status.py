@@ -8,7 +8,10 @@ from mlagents.trainers.training_status import (
     StatusMetaData,
     GlobalTrainingStatus,
 )
-from mlagents.trainers.trainer import CheckpointManagerClass, CheckpointType
+from mlagents.trainers.policy.checkpoint_manager import (
+    CheckpointManagerClass,
+    CheckpointType,
+)
 
 
 def test_globaltrainingstatus(tmpdir):
