@@ -34,7 +34,7 @@ from mlagents_envs.timers import (
     add_metadata as add_timer_metadata,
 )
 from mlagents_envs import logging_util
-from mlagents.trainers.trainer import CheckpointManagerClass
+from mlagents.trainers.policy.checkpoint_manager import CheckpointManagerClass
 
 logger = logging_util.get_logger(__name__)
 
