@@ -102,7 +102,7 @@ from gym_unity.envs import UnityToGymWrapper
 
 def main():
     unity_env = UnityEnvironment("./envs/GridWorld")
-    env = UnityToGymWrapper(unity_env, 0, uint8_visual=True)
+    env = UnityToGymWrapper(unity_env, flatten_branched = True, uint8_visual=True)
     logger.configure('./logs') # Çhange to log in a different directory
     act = deepq.learn(
         env,
